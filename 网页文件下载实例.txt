@@ -1,0 +1,17 @@
+		String  result =request.getSession().getAttribute("rest").toString();  
+		InputStream in = new FileInputStream("E:\\ll\\" + result + ".xlsx");  //下载的文件绝对路径
+		// 获取下载文件的绝对路径
+		OutputStream out = response.getOutputStream(); // 输出流进行编写
+		String filename = new String(result.getBytes("iso-8859-1"), "utf-8");   //将下载的文件名称进行转码 utf-8
+		// 下载的表格名称
+		response.setHeader("Content-Type", getServletContext().getMimeType(filename+".xlsx"));
+		response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+		response.setHeader("content-disposition", "attachment;filename=" + filename + ".xlsx"); // 设置content-disposition
+		int len = 0;  			
+		byte[] buffer = new byte[1024]; // 缓冲区
+		while ((len = in.read(buffer)) != -1) {
+			out.write(buffer, 0, len); // 三参数,第一参数缓存区,第二是从什么位置开始,第三是大小为多少的(长度为多少)
+		}
+		in.close(); // 关闭
+		out.flush();
+		out.close();
